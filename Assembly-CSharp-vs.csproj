@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{397076D1-26AD-A3A3-0464-BEF39F800BB1}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_2_1;UNITY_4_2;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="UnityEngine">
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Scripts\Camera\FadeOutLineOfSight.cs" />
+     <Compile Include="Assets\Scripts\Camera\OrbitCamera.cs" />
+     <Compile Include="Assets\Scripts\Camera\SimpleFollowCamera.cs" />
+     <Compile Include="Assets\Scripts\Camera\TargetedCamera.cs" />
+     <Compile Include="Assets\Scripts\Data Structures\PriorityQueue.cs" />
+     <Compile Include="Assets\Scripts\Entities\AiMovingEntity.cs" />
+     <Compile Include="Assets\Scripts\Entities\Entity.cs" />
+     <Compile Include="Assets\Scripts\Entities\MovingEntity.cs" />
+     <Compile Include="Assets\Scripts\Environment\PlanarWorld.cs" />
+     <Compile Include="Assets\Scripts\Environment\World.cs" />
+     <Compile Include="Assets\Scripts\Extensions.cs" />
+     <Compile Include="Assets\Scripts\Finite State Machine\State.cs" />
+     <Compile Include="Assets\Scripts\Finite State Machine\StateMachine.cs" />
+     <Compile Include="Assets\Scripts\GUI\FpsViewer.cs" />
+     <Compile Include="Assets\Scripts\GUI\MessageDisplayer.cs" />
+     <Compile Include="Assets\Scripts\GUI\StatisticsViewer.cs" />
+     <Compile Include="Assets\Scripts\GUI\WindowManager.cs" />
+     <Compile Include="Assets\Scripts\Goal Oriented Behaviour\GoalGenerator.cs" />
+     <Compile Include="Assets\Scripts\Managers\EntityManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\Event.Lifespan.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\Event.Lifespans.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\Event.T.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\Event.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\EventDelegate.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\EventManager.Events.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\EventManager.Subscriptions.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\EventManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\EventType.cs" />
+     <Compile Include="Assets\Scripts\Managers\EventManager\Events.cs" />
+     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Managers\Regulator.cs" />
+     <Compile Include="Assets\Scripts\Managers\TickManager.cs" />
+     <Compile Include="Assets\Scripts\Map\Connected Rooms\ConnectedRooms.cs" />
+     <Compile Include="Assets\Scripts\Map\MapGenerator.cs" />
+     <Compile Include="Assets\Scripts\Map\Maze\Maze.cs" />
+     <Compile Include="Assets\Scripts\Map\Maze\MazeCell.cs" />
+     <Compile Include="Assets\Scripts\Messaging\MessageDispatcher.cs" />
+     <Compile Include="Assets\Scripts\Messaging\MessageTypes.cs" />
+     <Compile Include="Assets\Scripts\Messaging\Telegram.cs" />
+     <Compile Include="Assets\Scripts\Movement\AiController.cs" />
+     <Compile Include="Assets\Scripts\Movement\Dynamic\DynamicMotor.cs" />
+     <Compile Include="Assets\Scripts\Movement\Dynamic\Weebles\DynamicWeebleMotor.cs" />
+     <Compile Include="Assets\Scripts\Movement\Dynamic\Weebles\SimpleDynamicWeebleMotor.cs" />
+     <Compile Include="Assets\Scripts\Movement\Kinematic\KinematicMotor.cs" />
+     <Compile Include="Assets\Scripts\Movement\Kinematic\Weebles\KinematicWeebleMotor.cs" />
+     <Compile Include="Assets\Scripts\Movement\Kinematic\Weebles\SimpleKinematicWeebleMotor.cs" />
+     <Compile Include="Assets\Scripts\Movement\Motor.cs" />
+     <Compile Include="Assets\Scripts\Movement\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\Navigation\GoalSelector.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Graph\AStarSearch.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Graph\Edge.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Graph\IndexedPriorityQueueLow.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Graph\Node.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Graph\Path.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Graph\PathEdge.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Graph\SparseGraph.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Path Manager\EdgeTraverser.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Path Manager\PathFollower.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Path Manager\PathManager.Events.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Path Manager\PathManager.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Search Spaces\Grid.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Search Spaces\PointsOfVisibility.cs" />
+     <Compile Include="Assets\Scripts\Navigation\Search Spaces\SearchSpace.cs" />
+     <Compile Include="Assets\Scripts\Steering\Arrive.cs" />
+     <Compile Include="Assets\Scripts\Steering\Dynamic\DynamicArrive.cs" />
+     <Compile Include="Assets\Scripts\Steering\Dynamic\DynamicSeek.cs" />
+     <Compile Include="Assets\Scripts\Steering\Kinematic\KinematicArrive.cs" />
+     <Compile Include="Assets\Scripts\Steering\Kinematic\KinematicSeek.cs" />
+     <Compile Include="Assets\Scripts\Steering\Seek.cs" />
+     <Compile Include="Assets\Scripts\Steering\Steering.cs" />
+     <Compile Include="Assets\Scripts\Steering\TargetSelector.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
