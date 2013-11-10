@@ -347,6 +347,53 @@ namespace Thot.GameAI
                 }
             }
         }
+		
+		/// <summary>
+        /// Add waypoints on every corner found
+        /// </summary>
+        /// <remarks>
+        /// NOTE: the checks for corner skip the border because of the method I use
+        /// </remarks>
+        public void AddCornerWaypoints()
+        {
+			for (int i = 1; i < this.Columns - 1; i++)
+			{
+				for (int k = 1; k < this.Rows - 1; k++)
+				{
+					if (Map[i,k] == (int)MapElements.Wall &&
+						(Map[i+1,k] == (int)MapElements.Space || Map[i+1,k] == (int)MapElements.Door) &&
+						(Map[i+1,k+1] == (int)MapElements.Space || Map[i+1,k+1] == (int)MapElements.Door) &&
+						(Map[i,k+1] == (int)MapElements.Space || Map[i,k+1] == (int)MapElements.Door))
+					{
+						Map[i+1,k+1] = (int)MapElements.Waypoint;
+					}
+					
+					if (Map[i+1,k] == (int)MapElements.Wall &&
+						(Map[i,k] == (int)MapElements.Space || Map[i,k] == (int)MapElements.Door) &&
+						(Map[i+1,k+1] == (int)MapElements.Space || Map[i+1,k+1] == (int)MapElements.Door) &&
+						(Map[i,k+1] == (int)MapElements.Space || Map[i,k+1] == (int)MapElements.Door))
+					{
+						Map[i,k+1] = (int)MapElements.Waypoint;
+					}
+					
+					if (Map[i+1,k+1] == (int)MapElements.Wall &&
+						(Map[i+1,k] == (int)MapElements.Space || Map[i+1,k] == (int)MapElements.Door) &&
+						(Map[i,k] == (int)MapElements.Space || Map[i,k] == (int)MapElements.Door) &&
+						(Map[i,k+1] == (int)MapElements.Space || Map[i,k+1] == (int)MapElements.Door))
+					{
+						Map[i,k] = (int)MapElements.Waypoint;
+					}
+					
+					if (Map[i,k+1] == (int)MapElements.Wall &&
+						(Map[i+1,k] == (int)MapElements.Space || Map[i+1,k] == (int)MapElements.Door) &&
+						(Map[i+1,k+1] == (int)MapElements.Space || Map[i+1,k+1] == (int)MapElements.Door) &&
+						(Map[i,k] == (int)MapElements.Space || Map[i,k] == (int)MapElements.Door))
+					{
+						Map[i+1,k] = (int)MapElements.Waypoint;
+					}
+				}
+			}
+        }
 
         /// <summary>
         /// Output a character-based representation of the map.

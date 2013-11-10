@@ -49,6 +49,7 @@
 #endregion Copyright © ThotLab Games 2011. Licensed under the terms of the Microsoft Reciprocal Licence (Ms-RL).
 
 using System.Collections.Generic;
+using System.Collections;
 
 using Thot.GameAI;
 
@@ -56,6 +57,8 @@ using UnityEngine;
 
 public sealed class MapGenerator : MonoBehaviour
 {
+	public bool cornerGraph = true;
+	
 	public bool generateMapOnAwake = true;
 	public int cellWidth = 1;
 	public int cellHeight = 1;
@@ -142,8 +145,13 @@ public sealed class MapGenerator : MonoBehaviour
 		
         var connectedRooms = new ConnectedRooms(columns, rows);
         connectedRooms.BuildMap();
-
-        connectedRooms.AddPointsOfVisibilityWaypoints();
+		
+		//TODO: create variable that toggles this
+		if (cornerGraph)
+			connectedRooms.AddCornerWaypoints();
+		else
+			connectedRooms.AddPointsOfVisibilityWaypoints();
+		
         connectedRooms.OutputMap("ConnectedRooms.txt");
         ////ConnectedRooms.SaveMap("ConnectedRooms.xml");
 
@@ -216,6 +224,44 @@ public sealed class MapGenerator : MonoBehaviour
 			}
 		}
     }
+	
+	private List<Vector3> getWaypointPositions(Maze maze)
+	{
+		MazeCell[,] cells = maze.Labrynth;
+		
+		List<Vector3> result = new List<Vector3>();
+		
+		//is a corner if wall-count is 1 in a four-circle
+		for (int i = 1; i < maze.Rows; i++)
+		{
+			for (int k = 1; k < maze.Columns; k++)
+			{
+				MazeCell cell = cells[i,k];
+				//cell is open space
+				if (cell.RightCell.CanGoLeft())
+				{
+					//and cell is corner
+					if (cell.CanGoDown() && cell.CanGoRight() && !cell.RightCell.CanGoDown()
+						|| cell.CanGoUp() && cell.CanGoRight() && !cell.RightCell.CanGoUp()
+						|| cell.CanGoUp() && cell.CanGoLeft() && !cell.LeftCell.CanGoUp()
+						|| cell.CanGoDown() && cell.CanGoLeft() && !cell.LeftCell.CanGoDown())
+					{
+						Vector3 position = new Vector3(World.Instance.Center.x - World.Instance.Size.x / 2 + i * cellWidth + cellWidth / 2.0f,
+									                    transform.position.y,
+									                    World.Instance.Center.y - World.Instance.Size.y / 2 + k * cellWidth + cellWidth / 2.0f);
+						result.Add(position);
+						Debug.Log("Found a corner!");
+					}
+					else
+					{
+						Debug.Log("Not a corner..");
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
 
     private void GenerateMazeMap()
     {	
@@ -224,6 +270,13 @@ public sealed class MapGenerator : MonoBehaviour
 		maze.CreateMaze();
         maze.OutputMap("Maze.txt");
         ////Maze.SaveMap("Maze.xml");
+		
+		if (cornerGraph)
+		{
+			List<Vector3> cornerWaypoints = getWaypointPositions((Maze)maze);
+		
+			World.Instance.Waypoints = cornerWaypoints;
+		}
 		
 		var horizontalWallScale = new Vector3(cellWidth, WALL_HEIGHT, WALL_THICKNESS);
         var verticalWallScale = new Vector3(WALL_THICKNESS, WALL_HEIGHT, cellHeight);
@@ -364,6 +417,6 @@ public sealed class MapGenerator : MonoBehaviour
 					verticalWall.transform.parent = wallsObject.transform;
 				}
 			}
-		}	
+		}
 	}
 }

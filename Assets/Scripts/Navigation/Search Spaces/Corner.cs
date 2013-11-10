@@ -1,4 +1,4 @@
-#region Copyright © ThotLab Games 2011. Licensed under the terms of the Microsoft Reciprocal Licence (Ms-RL).
+﻿#region Copyright © ThotLab Games 2011. Licensed under the terms of the Microsoft Reciprocal Licence (Ms-RL).
 
 // Microsoft Reciprocal License (Ms-RL)
 //
@@ -50,99 +50,50 @@
 
 using System.Collections.Generic;
 
+using Thot.GameAI;
+
 using UnityEngine;
 
-public abstract class World : MonoBehaviour
+public class Corner : SearchSpace
 {
-	private static World _instance;
-
-    public static World Instance
-    {
-        get
-        {
-			return _instance;
-        }
-    }
-	
-	public MapGenerator.MapTypes mapType = MapGenerator.MapTypes.ConnectedRooms;
-	
-	public List<Vector3> Waypoints { get; set; }
-	public Vector2 Size { get; protected set; }
-	public Vector2 Center { get; protected set; }
-	
-	public virtual void Awake()
+	public override void Start()
 	{
-		if (_instance != null)
-		{
-			Debug.Log("Multiple instances of World!");
-		}
+		base.Start();
 		
-		_instance = this;
+		Create();		
 	}
 	
-	public abstract float GroundHeightAt(Vector2 point);
-	public abstract Vector3 GroundPositionAt(Vector2 point);
-	public abstract Vector3 GroundPositionAt(Vector2 point, float heightOffset);
-	
-	public bool IsPointInObstacle(Vector2 point)
-	{
-		Vector3 groundPosition = GroundPositionAt(point);
-		groundPosition.y -= 1;
-		
-		foreach (RaycastHit hit in Physics.RaycastAll(groundPosition, Vector3.up, float.MaxValue))
-		{
-			Entity entity = hit.collider.gameObject.GetComponent<Entity>();
-
-			if (entity != null && entity.isObstacle)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	public Vector2 GetRandomPosition()
+	public override void Create()
     {
-        int attempts = 0;
-        var position = new Vector2();
-        while (attempts < 1000) // shouldn't hardcode max attempts
+        Graph = new SparseGraph(false);
+
+        for (int i = 0; i < World.Instance.Waypoints.Count; i++)
         {
-            position.x = Random.Range(Center.x - Size.x / 2, Center.x + Size.x / 2);
-            position.y =
-                Random.Range(Center.y - Size.y / 2, Center.y + Size.y / 2);
-
-            if (!IsPointInObstacle(position))
-            {
-                return position;
-            }
-
-            attempts++;
+            var node = new Node(i) { Position = new Vector2(World.Instance.Waypoints[i].x, World.Instance.Waypoints[i].z) };
+            Graph.AddNode(node);
+			//AddNodeObject(node, node.Position);
         }
 
-        // give up. just return a random node position
-        return position;
-    }
-	
-	public Vector2 GetRandomEntityPosition(MovingEntity movingEntity)
-    {
-        int attempts = 0;
-        var position = new Vector2();
-        while (attempts < 1000) // shouldn't hardcode max attempts
+        for (int fromIndex = 0; fromIndex < Graph.NumNodes; fromIndex++)
         {
-            position.x = Random.Range(Center.x - Size.x / 2, Center.x + Size.x / 2);
-            position.y =
-                Random.Range(Center.y - Size.y / 2, Center.y + Size.y / 2);
-
-            if (!movingEntity.IsEntityInObstacle(position))
+            Node fromNode = Graph.GetNode(fromIndex);
+            for (int toIndex = 0; toIndex < Graph.NumNodes; toIndex++)
             {
-                return position;
+                Node toNode = Graph.GetNode(toIndex);
+
+                if (IsPathObstructed(fromNode.Position, toNode.Position))
+                {
+                    continue;
+                }
+
+                var edge = 
+                    new Edge(
+                        fromIndex,
+                        toIndex,
+                        (fromNode.Position - toNode.Position).magnitude);
+                Graph.AddEdge(edge);
+				//AddEdgeObject(edge, fromNode.Position, toNode.Position);
             }
-
-            attempts++;
         }
-
-        // give up. just return a random node position
-        return position;
     }
 }
