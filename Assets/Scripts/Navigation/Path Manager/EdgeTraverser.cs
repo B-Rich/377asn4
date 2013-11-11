@@ -84,6 +84,8 @@ public sealed class EdgeTraverser : MonoBehaviour
 {
 	private Vector2 previousPosition;// = new Vector2(float.MaxValue, float.MaxValue);
 	
+	private Vector3 stuckDetector;
+	
 	private MovingEntity movingEntity;
 	private AiController aiController;
 	private Steering steering;
@@ -211,7 +213,19 @@ public sealed class EdgeTraverser : MonoBehaviour
     {
         //// TODO: add stuck test based on difference between current and
         //// previous position (perhaps taking expected velocity and elapsed time into account)
-        return false; // for now, just return false
+        //return false; // for now, just return false
+		bool xcond = false;
+		bool zcond = false;
+		
+		if (Mathf.Abs(movingEntity.Position.x - stuckDetector.x) < 1) xcond = true;
+		if (Mathf.Abs(movingEntity.Position.z - stuckDetector.z) < 1) zcond = true;
+		
+		stuckDetector = movingEntity.Position;
+		
+		if (xcond && zcond)
+			return true;
+		else
+			return false;
     }
 
     private void CheckIfStuck()

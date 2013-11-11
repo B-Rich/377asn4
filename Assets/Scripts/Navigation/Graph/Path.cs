@@ -143,7 +143,7 @@ namespace Thot.GameAI
 	        {
 	            return null;
 	        }
-	
+			//8. This seems fine
 	        PathEdge firstEdge = PathEdgeList[0];
 	        PathEdgeList.RemoveAt(0);
 			return firstEdge;
