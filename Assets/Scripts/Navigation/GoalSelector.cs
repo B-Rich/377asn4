@@ -85,7 +85,8 @@ public class GoalSelector : WindowManager
 			Debug.Log("No Motor");
 		}
 		
-		pathManager = GetComponent<PathManager>();
+		//pathManager = GetComponent<PathManager>(); //replce with game.w/e, then make singleton w/queue
+		pathManager = GameObject.Find("Game").GetComponent<PathManager>();
 		
 		GameObject mainCamera = GameObject.Find("Main Camera");
 		if (mainCamera != null)
@@ -145,7 +146,7 @@ public class GoalSelector : WindowManager
             return;
         }
 		
-		Debug.Log("Failed " + payload.path);
+		//Debug.Log("Failed " + payload.path);
 		
 //		if (currentDestination.HasValue)
 //		{
@@ -196,7 +197,8 @@ public class GoalSelector : WindowManager
 		if (pathManager == null)
         {
             Debug.Log("Getting Path Manager");
-            pathManager = GetComponent<PathManager>();
+            //pathManager = GetComponent<PathManager>();
+			pathManager = GameObject.Find("Game").GetComponent<PathManager>();
         }
 
         if (pathManager == null)
@@ -305,6 +307,8 @@ public class GoalSelector : WindowManager
 						EventManager.Instance.Enqueue<PathRequestEventPayload>(
 							Events.PathRequest,
 						    new PathRequestEventPayload(pathManager.searchSpace.gameObject, currentDestination.Value));
+						
+						
 					}
 		        }
 				
