@@ -1,0 +1,5 @@
+How PathManager Was Attempted
+
+1. Refactored original PathManager into a singleton; attached it to Game, detached it from Weebles
+2. Moved OnPathRequest method into FindPath method, replacing it with just enqueueing the incoming request
+3. On every update, PathManager checks if the queue.length > 1, then dequeue and perform FindPath on that EventData
