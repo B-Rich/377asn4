@@ -146,7 +146,7 @@ public class GoalSelector : WindowManager
             return;
         }
 		
-		//Debug.Log("Failed " + payload.path);
+	//	Debug.Log("Failed " + payload.path);
 		
 //		if (currentDestination.HasValue)
 //		{

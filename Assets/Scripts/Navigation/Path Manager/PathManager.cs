@@ -47,154 +47,6 @@
 // and non-infringement.
 
 #endregion Copyright © ThotLab Games 2011. Licensed under the terms of the Microsoft Reciprocal Licence (Ms-RL).
-/*
-using Thot.GameAI;
-
-using UnityEngine;
-
-public struct PathRequestEventPayload
-{
-	public GameObject gameObject;
-	public Vector2 destination;
-	
-	public PathRequestEventPayload(
-        GameObject gameObject,
-        Vector2 destination)
-    {
-        this.gameObject = gameObject;
-        this.destination = destination;
-    }
-}
-
-public struct PathReadyEventPayload
-{
-	public GameObject gameObject;
-	public Path path;
-	
-	public PathReadyEventPayload(
-        GameObject gameObject,
-        Path path)
-    {
-        this.gameObject = gameObject;
-        this.path = path;
-    }
-}
-
-public sealed class PathManager : MonoBehaviour
-{
-	public bool searchSpaceCanChange;
-	public bool requestPath;
-	public SearchSpace searchSpace;
-	public int currentSource;
-	public bool ignoreObstructions;
-
-	public bool showPath = true;
-	
-	public void Start()
-	{
-		SetSearchSpace();
-	}
-	
-	public void Update()
-	{
-		if (searchSpaceCanChange)
-		{
-			SetSearchSpace();
-		}
-				
-		if (searchSpace == null || !searchSpace.enabled)
-		{
-			return;
-		}
-		
-		// This is for manual testing via the Inspector
-		if (requestPath)
-		{
-			PathRequestEventPayload request = 
-				new PathRequestEventPayload(searchSpace.gameObject, searchSpace.GetRandomEntityPosition());
-			EventManager.Instance.Enqueue<PathRequestEventPayload>(Events.PathRequest, request);
-			requestPath = false;
-		}
-	}
-	
-	private void OnEnable()
-	{
-		EventManager.Instance.Subscribe<PathRequestEventPayload>(Events.PathRequest, OnPathRequest);
-	}
-	
-	private void OnDisable()
-	{
-		EventManager.Instance.Unsubscribe<PathRequestEventPayload>(Events.PathRequest, OnPathRequest);
-	}
-	
-	private void OnPathRequest(Event<PathRequestEventPayload> eventArg) //when path request, queue it, then on update, find path for first in queue
-	{
-		if (searchSpace == null)
-		{
-			return;
-		}
-		
-		PathRequestEventPayload request = eventArg.EventData;
-		if (request.gameObject != searchSpace.gameObject)
-		{
-			return; // request not for us
-		}
-		
-		MovingEntity movingEntity = request.gameObject.GetComponent<MovingEntity>();
-		Vector2 requestorPosition2D = (movingEntity != null && movingEntity.enabled) ? movingEntity.Position2D : request.gameObject.transform.position.To2D();
-		
-		int source = searchSpace.GetClosestNodeToPosition(requestorPosition2D);
-		
-		if (source != Node.INVALID_NODE_INDEX)
-		{
-			// Requestor may be inside or too close to obstruction
-            // so let's find the closest node to warp to
-			source = searchSpace.GetClosestNodeToPosition(requestorPosition2D, true);
-            if (source == SearchSpace.NO_CLOSEST_NODE_FOUND)
-            {
-                return; // screwed
-            }
-		}
-		
-		int target = searchSpace.GetClosestNodeToPosition(request.destination);
-        if (target == SearchSpace.NO_CLOSEST_NODE_FOUND)
-        {
-            ////TODO: should we instead move the target to closest valid node??
-            return;
-        }
-		
-		var currentSearch = new AStarSearch(searchSpace.Graph, source, target);
-		
-		var path = new Path(
-		        this,
-		        searchSpace.gameObject,
-                requestorPosition2D, 
-                request.destination, 
-                currentSearch.GetPathToTarget(),
-                searchSpace.Graph);
-		
-		PathReadyEventPayload result =
-			new PathReadyEventPayload(request.gameObject, path);
-		EventManager.Instance.Enqueue<PathReadyEventPayload>(Events.PathReady, result); 
-	}
-
-	private void SetSearchSpace()
-	{
-		if (searchSpace == null || !searchSpace.enabled)
-		{
-			foreach (SearchSpace ss in GetComponents<SearchSpace>())
-			{
-				if (ss.enabled)
-				{
-					searchSpace = ss;
-					break;
-				}
-			}
-		}
-	}
-}
-*/
-
 using UnityEngine;
 using System.Collections;
 using Thot.GameAI;
@@ -235,7 +87,7 @@ public class PathManager : MonoBehaviour {
 	
 	private static PathManager _instance;
 	
-	private Queue<Event<PathRequestEventPayload>> reqQueue;
+	public Queue<Event<PathRequestEventPayload>> reqQueue;
 
 	public bool searchSpaceCanChange;
 	public bool requestPath;
@@ -266,18 +118,27 @@ public class PathManager : MonoBehaviour {
 	{
 		SetSearchSpace();
 		reqQueue = new Queue<Event<PathRequestEventPayload>>();
+		Debug.Log("Queue created");
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
+		
+	//Debug.Log("Path Manager Update");
 		if (searchSpaceCanChange)
 		{
 			SetSearchSpace();
 		}
-				
+		
+		if (reqQueue.Count > 0){
+			Debug.Log ("Queue count" + reqQueue.Count);
+			//SetSearchSpace();
+			FindPath();
+		}	
 		if (searchSpace == null || !searchSpace.enabled)
 		{
+			Debug.Log("No Search Space");
 			return;
 		}
 		
@@ -289,8 +150,7 @@ public class PathManager : MonoBehaviour {
 			EventManager.Instance.Enqueue<PathRequestEventPayload>(Events.PathRequest, request);
 			requestPath = false;
 		}
-		Debug.Log (reqQueue.Count);
-		FindPath();
+		
 	}
 	
 	
@@ -307,6 +167,8 @@ public class PathManager : MonoBehaviour {
 	private void FindPath()
 	{
 		
+		Debug.Log("Finding Path");
+		
 		if (reqQueue.Count > 0)
 		{
 			
@@ -315,15 +177,28 @@ public class PathManager : MonoBehaviour {
 				return;
 			}
 		
-			PathRequestEventPayload request = reqQueue.Peek ().EventData;
+			PathRequestEventPayload request = reqQueue.Dequeue().EventData;
+			
+			Debug.Log("Finding Path request");
+			
 			if (request.gameObject != searchSpace.gameObject)
 			{
 				return; // request not for us
 			}
 			
+			Debug.Log("Finding Path is for us");
+			
+//			Transform weebleTransform = GameObject.Find("Agents/Weebles").transform;
+			
+			//MovingEntity movingEntity = weebleTransform.GetComponent<MovingEntity>();
 			MovingEntity movingEntity = request.gameObject.GetComponent<MovingEntity>();
+			
+			Debug.Log("Ent X: " + movingEntity.Position2D.x  + "Y: " + movingEntity.Position2D.y);
+			
 			Vector2 requestorPosition2D = (movingEntity != null && movingEntity.enabled) ? movingEntity.Position2D : request.gameObject.transform.position.To2D();
 		
+			Debug.Log("Pos X: " + requestorPosition2D.x  + "Y: " + requestorPosition2D.y);
+			
 			int source = searchSpace.GetClosestNodeToPosition(requestorPosition2D);
 		
 			if (source != Node.INVALID_NODE_INDEX)
@@ -333,6 +208,7 @@ public class PathManager : MonoBehaviour {
 				source = searchSpace.GetClosestNodeToPosition(requestorPosition2D, true);
         	    if (source == SearchSpace.NO_CLOSEST_NODE_FOUND)
         	    {
+					Debug.Log("No closest node found 1");
         	        return; // screwed
         	    }
 			}
@@ -341,10 +217,13 @@ public class PathManager : MonoBehaviour {
     	    if (target == SearchSpace.NO_CLOSEST_NODE_FOUND)
     	    {
     	        ////TODO: should we instead move the target to closest valid node??
+				Debug.Log("No closest node found 1");
     	        return;
     	    }
 			
 			var currentSearch = new AStarSearch(searchSpace.Graph, source, target);
+			
+			Debug.Log("Finding Path: done search");
 			
 			var path = new Path(
 			        this,
@@ -354,10 +233,14 @@ public class PathManager : MonoBehaviour {
         	        currentSearch.GetPathToTarget(),
         	        searchSpace.Graph);
 			
+			Debug.Log("Finding Path: created path");
+			
 			PathReadyEventPayload result =
 				new PathReadyEventPayload(request.gameObject, path);
 			EventManager.Instance.Enqueue<PathReadyEventPayload>(Events.PathReady, result); 	
-			reqQueue.Dequeue();
+			
+			Debug.Log("Finding Path: done");
+			
 		}
 	}
 	
@@ -368,6 +251,7 @@ public class PathManager : MonoBehaviour {
 
 	private void SetSearchSpace()
 	{
+		
 		if (searchSpace == null || !searchSpace.enabled)
 		{
 			foreach (SearchSpace ss in GetComponents<SearchSpace>())
@@ -379,6 +263,9 @@ public class PathManager : MonoBehaviour {
 				}
 			}
 		}
+		
+		//searchSpace = reqQueue.Peek ().EventData.gameObject.GetComponentInChildren<SearchSpace>();
+		
 	}
 	
 }
