@@ -176,6 +176,40 @@ namespace Thot.GameAI
 
                 path.Insert(0, nd);
             }
+			
+			/*
+			
+			//string pull the entire path
+			var stringPulledPath = new List<int>();
+			stringPulledPath.Add(path[0]); 
+			
+			//for every node
+			for (int i = 0; i < path.Count - 1; i++)
+			{
+				int nodeNum = path[i]; 
+				int lastVisibleNodeNum = path[i+1]; 
+				int atIndex = i+1; 
+			
+				//find the last visible node and index from this node for 
+				for (int j = i+2; j < path.Count; j++) 
+				{
+					int nextNodeNum = path[j];
+					
+					if ( !space.IsPathObstructed(graph.GetNode(nodeNum).Position, graph.GetNode(nextNodeNum).Position) ) 
+						lastVisibleNodeNum = nextNodeNum; atIndex = j; 
+				}
+			 	
+				//add that last visible index to the path
+				stringPulledPath.Add(lastVisibleNodeNum); 
+				
+				//find the next visible index starting at this node 
+				i = atIndex; 
+			} 
+			
+			return stringPulledPath;
+			
+			*/
+			
 
             return path;
         }
